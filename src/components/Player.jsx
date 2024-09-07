@@ -4,7 +4,7 @@ const Player = ({ player, onCardClick, selectedCard }) => {
 
   return (
     <div className={`player player-${player.id}`}>
-      <h2>{player.name}</h2>
+      <h3>{player.name}</h3>
       <div className="cards">
         {player.cards.map((card) => (
           <div

@@ -46,9 +46,9 @@ const Game = () => {
     // Distribuer 2 cartes à chaque joueur
     const initialPlayers = [
       { id: 1, name: 'Joueur 1', isEliminated: false, cards: remainingDeck.slice(0, 2) },
-      { id: 2, name: 'Adversaire 1', isEliminated: false, cards: remainingDeck.slice(2, 4) },
-      { id: 3, name: 'Adversaire 2', isEliminated: false, cards: remainingDeck.slice(4, 6) },
-      { id: 4, name: 'Adversaire 3', isEliminated: false, cards: remainingDeck.slice(6, 8) }
+      { id: 2, name: 'Adv. 1', isEliminated: false, cards: remainingDeck.slice(2, 4) },
+      { id: 3, name: 'Adv. 2', isEliminated: false, cards: remainingDeck.slice(4, 6) },
+      { id: 4, name: 'Adv. 3', isEliminated: false, cards: remainingDeck.slice(6, 8) }
     ];
 
     setPlayers(initialPlayers);
