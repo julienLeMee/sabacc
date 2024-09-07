@@ -1,18 +1,22 @@
 import React from 'react';
 
-const Player = ({ player, onCardClick }) => {
+const Player = ({ player, onCardClick, selectedCard }) => {
+
   return (
-    <div className="player">
-      <h3>{player.name}</h3>
-      <p>Status: {player.isEliminated ? 'Eliminé' : 'En jeu'}</p>
+    <div className={`player player-${player.id}`}>
+      <h2>{player.name}</h2>
       <div className="cards">
         {player.cards.map((card) => (
           <div
-            key={card.id}
+            key={card.uniqueId}
             className="card"
             onClick={() => onCardClick(card)}
+            style={{
+              cursor: 'pointer',
+              background: selectedCard && selectedCard.uniqueId === card.uniqueId ? 'tomato' : 'white'
+            }}
           >
-            {card.name}
+            <p>{card.name}</p> {/* Afficher le nom de la carte pour vérification */}
           </div>
         ))}
       </div>
