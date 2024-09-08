@@ -12,10 +12,9 @@
 }
 
 .pass-button {
-    margin-bottom: 0.25rem;
+    margin: 0.5rem auto;
     display: flex;
     justify-content: center;
-    width: 100%;
 }
 
 .pioche {
@@ -67,7 +66,11 @@
     border: 1px solid #333;
     background: white;
 }
-.card:hover,
-.pioche-card:hover {
+.card.red:hover,
+.pioche-card.red:hover {
     background: tomato;
+}
+.card.gold:hover,
+.pioche-card.gold:hover {
+    background: gold;
 }

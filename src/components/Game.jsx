@@ -3,24 +3,22 @@ import Player from './Player';
 
 const Game = () => {
   const baseCards = [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 3, name: '3' },
-    { id: 4, name: '4' },
-    { id: 5, name: '5' },
-    { id: 6, name: '6' },
-    { id: 7, name: '*' },
-    { id: 8, name: '#' }
+    { id: 1, name: '1', type: 'red' },
+    { id: 2, name: '2', type: 'gold' },
+    { id: 3, name: '3', type: 'red' },
+    { id: 4, name: '4', type: 'gold' },
+    { id: 5, name: '5', type: 'red' },
+    { id: 6, name: '6', type: 'gold' },
+    { id: 7, name: '*', type: 'red' },
+    { id: 8, name: '#', type: 'gold' }
   ];
 
-  // Duplicating each card 3 times
   const allCards = baseCards.flatMap(card => [
     { ...card, uniqueId: card.id + '-1' },
     { ...card, uniqueId: card.id + '-2' },
     { ...card, uniqueId: card.id + '-3' }
   ]);
 
-  // Fonction pour mélanger les cartes
   const shuffleCards = (cards) => [...cards].sort(() => 0.5 - Math.random());
 
   const [deck, setDeck] = useState(shuffleCards(allCards));
@@ -33,33 +31,49 @@ const Game = () => {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    // Initial setup after the first render
     const initialDeck = shuffleCards(allCards);
-    setDeck(initialDeck);
 
-    // Pioche et deck restants
-    const initialPioche = initialDeck.slice(0, 2);
-    const remainingDeck = initialDeck.slice(2);
+    // Distribuer une carte de chaque type (red et gold) à chaque joueur
+    const distributeCards = (cards) => {
+      const playersSetup = [];
+      for (let i = 0; i < 4; i++) {
+        const redCard = cards.find(card => card.type === 'red');
+        const goldCard = cards.find(card => card.type === 'gold');
 
-    setPiocheCards(initialPioche);
-    setDeckRemaining(remainingDeck);
+        playersSetup.push({
+          id: i + 1,
+          name: i === 0 ? 'Joueur 1' : `Adv. ${i}`,
+          isEliminated: false,
+          cards: [redCard, goldCard],
+          canPlay: i === 0
+        });
 
-    // Distribuer 2 cartes à chaque joueur
-    const initialPlayers = [
-      { id: 1, name: 'Joueur 1', isEliminated: false, cards: remainingDeck.slice(0, 2), canPlay: true },
-      { id: 2, name: 'Adv. 1', isEliminated: false, cards: remainingDeck.slice(2, 4), canPlay: false },
-      { id: 3, name: 'Adv. 2', isEliminated: false, cards: remainingDeck.slice(4, 6), canPlay: false },
-      { id: 4, name: 'Adv. 3', isEliminated: false, cards: remainingDeck.slice(6, 8), canPlay: false }
-    ];
+        // Retirer les cartes distribuées du deck
+        cards = cards.filter(card => card !== redCard && card !== goldCard);
+      }
+      return { players: playersSetup, remainingDeck: cards };
+    };
+
+    const { players: initialPlayers, remainingDeck } = distributeCards(initialDeck);
 
     setPlayers(initialPlayers);
-    setDeckRemaining(remainingDeck.slice(8)); // Mettre à jour le deck restant après distribution
-  }, []); // Le tableau vide signifie que cet effet ne s'exécute qu'une seule fois
+    setDeckRemaining(remainingDeck.slice(8)); // Pioche restante après la distribution
+
+    // Pioche de 2 cartes pour remplacer
+    setPiocheCards(remainingDeck.slice(0, 2));
+  }, []);
+
+  const nextTurn = () => {
+    setCurrentPlayer((currentPlayer + 1) % players.length);
+  };
+
+  const passTurn = () => {
+    nextTurn(); // Passer au joueur suivant sans action
+  };
 
   const drawAndReplaceCard = (index) => {
     if (!selectedCard) return;
 
-    // Remplacement de la carte sélectionnée par une carte de la pioche
     const newPlayers = players.map((player) => {
       if (player.id === players[currentPlayer].id) {
         const newCards = player.cards.map((card) =>
@@ -70,18 +84,14 @@ const Game = () => {
       return player;
     });
 
-    // Mise à jour des états
     setPlayers(newPlayers);
-    setSelectedCard(null); // Réinitialiser la carte sélectionnée
+    setSelectedCard(null);
 
-    // Mettre à jour la pioche avec deux nouvelles cartes
     const newPiocheCards = deckRemaining.slice(0, 2);
     setPiocheCards(newPiocheCards);
     setDeckRemaining(deckRemaining.slice(2));
 
-    // Passer au joueur suivant
-    setCurrentPlayer((currentPlayer + 1) % players.length);
-    setRound(round + 1);
+    nextTurn();
   };
 
   return (
@@ -95,10 +105,13 @@ const Game = () => {
             <div
               key={card.uniqueId}
               className="pioche-card"
-              onClick={() => drawAndReplaceCard(index)}
-              style={{ cursor: 'pointer', border: selectedCard && selectedCard.uniqueId === card.uniqueId ? '2px solid red' : '1px solid black' }}
+              onClick={() => selectedCard && drawAndReplaceCard(index)}
+              style={{
+                cursor: 'pointer',
+                border: selectedCard && selectedCard.uniqueId === card.uniqueId ? '2px solid red' : '1px solid black'
+              }}
             >
-              <p>{card.name}</p> {/* Afficher le nom de la carte pour vérification */}
+              <p>{card.name}</p> {/* Afficher le nom et le type de la carte */}
             </div>
           ))}
         </div>
@@ -110,8 +123,9 @@ const Game = () => {
             <Player
               key={player.id}
               player={player}
-              onCardClick={(card) => setSelectedCard(card)} // Sélectionner une carte à remplacer
+              onCardClick={(card) => player.canPlay && setSelectedCard(card)} // Seul le joueur actif peut cliquer
               selectedCard={selectedCard}
+              passTurn={passTurn} // Ajouter la fonction pour passer le tour
             />
           )
         ))}
