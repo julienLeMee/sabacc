@@ -25,6 +25,7 @@ const Game = () => {
 
   const [deck, setDeck] = useState(shuffleCards(allCards));
   const [round, setRound] = useState(1);
+  const [turn, setTurn] = useState(1);
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [selectedCard, setSelectedCard] = useState(null);
   const [piocheCards, setPiocheCards] = useState([]);
@@ -45,10 +46,10 @@ const Game = () => {
 
     // Distribuer 2 cartes à chaque joueur
     const initialPlayers = [
-      { id: 1, name: 'Joueur 1', isEliminated: false, cards: remainingDeck.slice(0, 2) },
-      { id: 2, name: 'Adv. 1', isEliminated: false, cards: remainingDeck.slice(2, 4) },
-      { id: 3, name: 'Adv. 2', isEliminated: false, cards: remainingDeck.slice(4, 6) },
-      { id: 4, name: 'Adv. 3', isEliminated: false, cards: remainingDeck.slice(6, 8) }
+      { id: 1, name: 'Joueur 1', isEliminated: false, cards: remainingDeck.slice(0, 2), canPlay: true },
+      { id: 2, name: 'Adv. 1', isEliminated: false, cards: remainingDeck.slice(2, 4), canPlay: false },
+      { id: 3, name: 'Adv. 2', isEliminated: false, cards: remainingDeck.slice(4, 6), canPlay: false },
+      { id: 4, name: 'Adv. 3', isEliminated: false, cards: remainingDeck.slice(6, 8), canPlay: false }
     ];
 
     setPlayers(initialPlayers);

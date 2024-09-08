@@ -5,6 +5,7 @@ const Player = ({ player, onCardClick, selectedCard }) => {
   return (
     <div className={`player player-${player.id}`}>
       <h3>{player.name}</h3>
+      <button className='pass-button'>Passer</button>
       <div className="cards">
         {player.cards.map((card) => (
           <div
@@ -13,7 +14,7 @@ const Player = ({ player, onCardClick, selectedCard }) => {
             onClick={() => onCardClick(card)}
             style={{
               cursor: 'pointer',
-              background: selectedCard && selectedCard.uniqueId === card.uniqueId ? 'tomato' : 'white'
+              background: selectedCard && selectedCard.uniqueId === card.uniqueId ? 'tomato' : ''
             }}
           >
             <p>{card.name}</p> {/* Afficher le nom de la carte pour vérification */}

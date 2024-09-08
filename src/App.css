@@ -3,10 +3,19 @@
     background-color: rgba(0, 0, 0, 0.05);
     padding: 1rem;
 }
+
 .pioche h3,
 .player h3 {
     margin-top: 0;
+    margin-bottom: 0.25rem;
     text-align: center;
+}
+
+.pass-button {
+    margin-bottom: 0.25rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .pioche {
@@ -56,4 +65,9 @@
 .pioche-card {
     padding: 1rem;
     border: 1px solid #333;
+    background: white;
+}
+.card:hover,
+.pioche-card:hover {
+    background: tomato;
 }
